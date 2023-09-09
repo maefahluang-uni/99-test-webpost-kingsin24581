@@ -1,6 +1,6 @@
 package lab.webpost.domain;
 
-import java.time.LocalDateTime;
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,25 +8,36 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.time.LocalDateTime;
 
 import lab.jackson.LocalDateTimeDeserializer;
 import lab.jackson.LocalDateTimeSerializer;
 
 //TODO: add annotation for entity
-
+@Entity
+@Table(name = "Post")
 public class Post {
 
     //TODO: add annotation for id
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
     private String title;
     private String body;
+    
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+@JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
 
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "author", referencedColumnName = "id")
     private User author;
 
     
@@ -59,6 +70,7 @@ public class Post {
     }
 
     //TODO: add the JSONSerialze and JsonDeserialize
+    
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

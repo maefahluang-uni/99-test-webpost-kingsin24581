@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
+@SpringBootApplication
+@EntityScan("lab.webpost.domain.Post")
 public class PostApplication {
      public static void main(String[] args) {
         SpringApplication.run(PostApplication.class, args);
@@ -18,7 +19,7 @@ public class PostApplication {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:8081");
+				registry.addMapping("/posts").allowedOrigins("http://localhost:8081");
 			}
 		};
 	}

@@ -26,14 +26,13 @@ public class Post {
 
     //TODO: add annotation for id
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     private String title;
     private String body;
     
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-@JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    
     private LocalDateTime createdAt;
 
     @ManyToOne(cascade = CascadeType.MERGE)
@@ -70,7 +69,8 @@ public class Post {
     }
 
     //TODO: add the JSONSerialze and JsonDeserialize
-    
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+@JsonDeserialize(using = LocalDateTimeDeserializer.class)
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

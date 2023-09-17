@@ -6,34 +6,26 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import lab.webpost.domain.Post;
-import lab.webpost.domain.User;
 
 @RestController
+@RequestMapping("/posts") // Set the base path for all endpoints in this controller
 public class PostController {
 
     @Autowired
     PostRepository postRepository;
 
-    // TODO: get all Posts
+    // Get all Posts
     @GetMapping
     public ResponseEntity<List<Post>> getPosts() {
         List<Post> posts = postRepository.findAll();
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    //TODO: getting post by id
+    // Get post by ID
     @GetMapping("/{id}")
-    public ResponseEntity<Post> getPostById( Long id) {
-        // TODO: check if post is null
+    public ResponseEntity<Post> getPostById(@PathVariable Long id) {
         Optional<Post> postOpt = postRepository.findById(id);
         if (postOpt.isPresent()) {
             return new ResponseEntity<>(postOpt.get(), HttpStatus.OK);
@@ -42,27 +34,27 @@ public class PostController {
         }
     }
 
-    //TODO: find by title
-    @GetMapping("/{title}")
-    public ResponseEntity<List<Post>> getPostByTitle( String title) {
+    // Find by title
+    @GetMapping("/title/{title}") // Added "/title" to distinguish from the previous endpoint
+    public ResponseEntity<List<Post>> getPostByTitle(@PathVariable String title) {
         List<Post> posts = postRepository.findByTitle(title);
-        if (posts != null) {
+        if (!posts.isEmpty()) {
             return ResponseEntity.ok(posts);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    // TODO: adding new post
+    // Add new post
     @PostMapping
-    public ResponseEntity<String> addPost( Post post) {
+    public ResponseEntity<String> addPost(@RequestBody Post post) {
         postRepository.save(post);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // TODO: delete post by id
+    // Delete post by ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost( Long id) {
+    public ResponseEntity<String> deletePost(@PathVariable Long id) {
         if (postRepository.existsById(id)) {
             postRepository.deleteById(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -71,11 +63,10 @@ public class PostController {
         }
     }
 
-    //TODO: delete all posts
+    // Delete all posts
     @DeleteMapping
     public ResponseEntity<String> deleteAllPosts() {
         postRepository.deleteAll();
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 }

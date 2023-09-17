@@ -17,11 +17,6 @@
         <!-- Posts will be displayed here -->
     </div>
     <script>
-        // Fetch the username from localStorage
-        var username = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).username : null;
-        function dateToISOButLocal(date) {
-            return date.toLocaleString('sv').replace(' ', 'T');
-        }
         // Function to fetch and display posts
         function fetchPosts() {
             $.ajax({
@@ -45,17 +40,22 @@
         // Function to handle form submission and post message
         $('#postForm').submit(function (e) {
             e.preventDefault();
+            
             var userId = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).userId : null;
+            if (!userId) {
+                console.log('User is not logged in. Please implement authentication.');
+                return;
+            }
+
             var postData = {
-                title:  $('#title').val(),
+                title: $('#title').val(),
                 body: $('#body').val(),
-                createdAt: dateToISOButLocal(new Date()),
+                createdAt: new Date().toISOString(), // Use ISO format for the date
                 author: {
                     id: userId
                 }
             };
-            console.log(localStorage.getItem('userInfo'));
-            console.log('Post data:', JSON.stringify(postData));
+
             $.ajax({
                 url: 'http://localhost:8080/posts', // Replace with your backend API URL to save the post
                 method: 'POST',
